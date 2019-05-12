@@ -28,34 +28,15 @@ public class TransactionApplication implements CommandLineRunner {
     ReentrantLock reentrantLock = new ReentrantLock();
 
 
-//    // for update加事务，并且不提交事务
-//    @Override
-//    public void run(String... args) throws Exception {
-//
-//        reentrantLock.lock();
-//
-//        new Thread(() -> {
-//            transactionTemplate.execute(transactionStatus -> {
-//                this.forupdateMapper.findByName("testforupdate");
-//                System.out.println("==========for update==========");
-//                countDownLatch.countDown();
-//                reentrantLock.lock(); // 阻塞不让提交事务
-//                return null;
-//            });
-//        }).start();
-//
-//        countDownLatch.await();
-//        System.out.println("==========for update has countdown==========");
-//        this.forupdateMapper.updateByName("testforupdate");
-//        System.out.println("==========update success==========");
-//
-//        reentrantLock.unlock();
-//    }
-
-
-    // for update不加事务
     @Override
     public void run(String... args) throws Exception {
+//        forupdate();
+//        forupdateByTransaction();
+        forupdateByConcurrent();
+    }
+
+    // for update不加事务
+    private void forupdate() throws Exception {
 
         new Thread(() -> {
             this.forupdateMapper.findByName("testforupdate");
@@ -70,19 +51,38 @@ public class TransactionApplication implements CommandLineRunner {
 
     }
 
+    // for update加事务，并且不提交事务
+    private void forupdateByTransaction() throws Exception {
+
+        reentrantLock.lock();
+
+        new Thread(() -> {
+            transactionTemplate.execute(transactionStatus -> {
+                this.forupdateMapper.findByName("testforupdate");
+                System.out.println("==========for update==========");
+                countDownLatch.countDown();
+                reentrantLock.lock(); // 阻塞不让提交事务
+                return null;
+            });
+        }).start();
+
+        countDownLatch.await();
+        System.out.println("==========for update has countdown==========");
+        this.forupdateMapper.updateByName("testforupdate");
+        System.out.println("==========update success==========");
+
+        reentrantLock.unlock();
+    }
 
     // 并发执行for udpate
-//    @Override
-//    public void run(String... args) throws Exception {
-//
-//        AtomicInteger atomicInteger = new AtomicInteger();
-//
-//        for (int i = 0; i < 100; i++) {
-//            this.forupdateMapper.findByName("testforupdate");
-//            System.out.println("========ok:" + atomicInteger.getAndIncrement());
-//        }
+    private void forupdateByConcurrent() {
 
-//    }
+        AtomicInteger atomicInteger = new AtomicInteger();
 
+        for (int i = 0; i < 100; i++) {
+            this.forupdateMapper.findByName("testforupdate");
+            System.out.println("========ok:" + atomicInteger.getAndIncrement());
+        }
+    }
 
 }
