@@ -21,6 +21,7 @@ Thumbs.db
 *.orig
 mvnw
 .mvn/
+mvnw.cmd
 
 # idea ignore
 .idea/
