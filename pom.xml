@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.objcoding</groupId>
-    <artifactId>transaction</artifactId>
+    <artifactId>test-forupdate</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>transaction</name>
+    <name>test-forupdate</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
