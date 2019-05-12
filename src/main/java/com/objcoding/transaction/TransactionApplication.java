@@ -56,15 +56,14 @@ public class TransactionApplication implements CommandLineRunner {
 
         reentrantLock.lock();
 
-        new Thread(() -> {
+        new Thread(() ->
             transactionTemplate.execute(transactionStatus -> {
                 this.forupdateMapper.findByName("testforupdate");
                 System.out.println("==========for update==========");
                 countDownLatch.countDown();
                 reentrantLock.lock(); // 阻塞不让提交事务
                 return null;
-            });
-        }).start();
+            })).start();
 
         countDownLatch.await();
         System.out.println("==========for update has countdown==========");
