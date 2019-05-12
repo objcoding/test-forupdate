@@ -24,8 +24,9 @@ public class TransactionApplication implements CommandLineRunner {
     @Autowired
     private TransactionTemplate transactionTemplate;
 
-    CountDownLatch countDownLatch = new CountDownLatch(1);
-    ReentrantLock reentrantLock = new ReentrantLock();
+    private static final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+    private static final ReentrantLock reentrantLock = new ReentrantLock();
 
 
     @Override
