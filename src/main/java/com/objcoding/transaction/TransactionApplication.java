@@ -82,8 +82,10 @@ public class TransactionApplication implements CommandLineRunner {
         AtomicInteger atomicInteger = new AtomicInteger();
 
         for (int i = 0; i < 100; i++) {
-            this.forupdateMapper.findByName("testforupdate");
-            System.out.println("========ok:" + atomicInteger.getAndIncrement());
+            new Thread(() -> {
+                this.forupdateMapper.findByName("testforupdate");
+                System.out.println("========ok:" + atomicInteger.getAndIncrement());
+            }).start();
         }
     }
 
