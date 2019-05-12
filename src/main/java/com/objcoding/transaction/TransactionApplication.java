@@ -55,6 +55,7 @@ public class TransactionApplication implements CommandLineRunner {
     // for update加事务，并且不提交事务
     private void forupdateByTransaction() throws Exception {
 
+        // 主线程获取独占锁
         reentrantLock.lock();
 
         new Thread(() ->
@@ -62,7 +63,8 @@ public class TransactionApplication implements CommandLineRunner {
                 this.forupdateMapper.findByName("testforupdate");
                 System.out.println("==========for update==========");
                 countDownLatch.countDown();
-                reentrantLock.lock(); // 阻塞不让提交事务
+                // 阻塞不让提交事务
+                reentrantLock.lock();
                 return null;
             })).start();
 
