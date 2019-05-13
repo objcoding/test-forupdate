@@ -31,38 +31,15 @@ public class TransactionApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-//        forupdate();
 //        forupdateByTransaction();
         forupdateByConcurrent();
 //        forupdateByConcurrentAndTransaction();
     }
 
-    /**
-     * for update不加Spring事务
-     *
-     * 数据库autocommit=true：不会阻塞
-     * 数据库autocommit=false：很大概率不会阻塞
-     */
-    private void forupdate() throws Exception {
-
-        new Thread(() -> {
-            this.forupdateMapper.findByName("testforupdate");
-            System.out.println("==========for update==========");
-            countDownLatch.countDown();
-        }).start();
-
-        countDownLatch.await();
-        System.out.println("==========for update has countdown==========");
-        this.forupdateMapper.updateByName("testforupdate");
-        System.out.println("==========update success==========");
-
-    }
 
     /**
      * for update加Spring事务，并且不提交事务
-     *
-     * 数据库autocommit=true：阻塞，如果提交事务后，不会阻塞
-     * 数据库autocommit=false：阻塞，如果提交事务后，不会阻塞
+     * 这个情况肯定阻塞
      */
     private void forupdateByTransaction() throws Exception {
 
@@ -90,14 +67,18 @@ public class TransactionApplication implements CommandLineRunner {
     /**
      * 并发执行for udpate不加Spring事务
      *
-     * 数据库autocommit=true：不会阻塞
-     * 数据库autocommit=false：不会阻塞
+     * mysql
+     * autocommit=true：不会阻塞
+     * autocommit=false：不会阻塞
+     *
+     * oracle
+     * autocommit=false：阻塞
      */
     private void forupdateByConcurrent() {
 
         AtomicInteger atomicInteger = new AtomicInteger();
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 200; i++) {
             new Thread(() -> {
                 this.forupdateMapper.findByName("testforupdate");
                 System.out.println("========ok:" + atomicInteger.getAndIncrement());
@@ -108,8 +89,12 @@ public class TransactionApplication implements CommandLineRunner {
     /**
      * 并发执行for udpate加Srping事务
      *
-     * 数据库autocommit=true：不会阻塞
-     * 数据库autocommit=false：不会阻塞
+     * mysql
+     * autocommit=true：不会阻塞
+     * autocommit=false：不会阻塞
+     *
+     * oracle
+     * autocommit=false：不会阻塞
      */
     private void forupdateByConcurrentAndTransaction() {
 
