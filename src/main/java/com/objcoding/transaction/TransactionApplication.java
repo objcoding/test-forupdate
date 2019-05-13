@@ -36,7 +36,6 @@ public class TransactionApplication implements CommandLineRunner {
         forupdateByConcurrentAndTransaction();
     }
 
-
     /**
      * for update加Spring事务，并且不提交事务
      * 这个情况肯定阻塞
@@ -78,7 +77,7 @@ public class TransactionApplication implements CommandLineRunner {
 
         AtomicInteger atomicInteger = new AtomicInteger();
 
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 10; i++) {
             new Thread(() -> {
                 this.forupdateMapper.findByName("testforupdate");
                 System.out.println("========ok:" + atomicInteger.getAndIncrement());
@@ -100,7 +99,7 @@ public class TransactionApplication implements CommandLineRunner {
 
         AtomicInteger atomicInteger = new AtomicInteger();
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
             new Thread(() ->
                     transactionTemplate.execute(transactionStatus -> {
                         this.forupdateMapper.findByName("testforupdate");
