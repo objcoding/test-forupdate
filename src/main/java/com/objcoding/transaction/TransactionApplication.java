@@ -33,8 +33,8 @@ public class TransactionApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
 //        forupdate();
 //        forupdateByTransaction();
-//        forupdateByConcurrent();
-        forupdateByConcurrentAndTransaction();
+        forupdateByConcurrent();
+//        forupdateByConcurrentAndTransaction();
     }
 
     /**
@@ -91,7 +91,7 @@ public class TransactionApplication implements CommandLineRunner {
      * 并发执行for udpate不加Spring事务
      *
      * 数据库autocommit=true：不会阻塞
-     * 数据库autocommit=false：阻塞
+     * 数据库autocommit=false：不会阻塞
      */
     private void forupdateByConcurrent() {
 
