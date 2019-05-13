@@ -65,11 +65,11 @@ public class TransactionApplication implements CommandLineRunner {
 
     /**
      * 并发执行for udpate不加Spring事务，每条sql的执行只有mybatis的jdbc事务
-     *
+     * <p>
      * mysql
      * autocommit=true：不会阻塞
      * autocommit=false：不会阻塞
-     *
+     * <p>
      * oracle
      * autocommit=false：阻塞
      */
@@ -87,11 +87,11 @@ public class TransactionApplication implements CommandLineRunner {
 
     /**
      * 并发执行for udpate加Srping事务
-     *
+     * <p>
      * mysql
      * autocommit=true：不会阻塞
      * autocommit=false：不会阻塞
-     *
+     * <p>
      * oracle
      * autocommit=false：不会阻塞
      */
