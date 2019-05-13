@@ -18,6 +18,14 @@
         <java.version>1.8</java.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>objcoding-maven-master-repository</id>
+            <name>objcoding-maven-master-repository</name>
+            <url>https://raw.github.com/objcoding/maven/master/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -43,10 +51,16 @@
             <scope>test</scope>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba</groupId>-->
+<!--            <artifactId>druid-spring-boot-starter</artifactId>-->
+<!--            <version>1.1.16</version>-->
+<!--        </dependency>-->
+
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.1.16</version>
+            <groupId>com.objcoding</groupId>
+            <artifactId>druid-preview</artifactId>
+            <version>1.1.9</version>
         </dependency>
 
     </dependencies>
