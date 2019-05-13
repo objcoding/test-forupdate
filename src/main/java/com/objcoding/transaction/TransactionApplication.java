@@ -33,7 +33,8 @@ public class TransactionApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
 //        forupdate();
 //        forupdateByTransaction();
-        forupdateByConcurrent();
+//        forupdateByConcurrent();
+        forupdateByConcurrentAndTransaction();
     }
 
     // for update不加事务
@@ -59,14 +60,14 @@ public class TransactionApplication implements CommandLineRunner {
         reentrantLock.lock();
 
         new Thread(() ->
-            transactionTemplate.execute(transactionStatus -> {
-                this.forupdateMapper.findByName("testforupdate");
-                System.out.println("==========for update==========");
-                countDownLatch.countDown();
-                // 阻塞不让提交事务
-                reentrantLock.lock();
-                return null;
-            })).start();
+                transactionTemplate.execute(transactionStatus -> {
+                    this.forupdateMapper.findByName("testforupdate");
+                    System.out.println("==========for update==========");
+                    countDownLatch.countDown();
+                    // 阻塞不让提交事务
+                    reentrantLock.lock();
+                    return null;
+                })).start();
 
         countDownLatch.await();
         System.out.println("==========for update has countdown==========");
@@ -76,7 +77,7 @@ public class TransactionApplication implements CommandLineRunner {
         reentrantLock.unlock();
     }
 
-    // 并发执行for udpate
+    // 并发执行for udpate不加事务
     private void forupdateByConcurrent() {
 
         AtomicInteger atomicInteger = new AtomicInteger();
@@ -89,4 +90,22 @@ public class TransactionApplication implements CommandLineRunner {
         }
     }
 
+    // 并发执行for udpate加事务
+    private void forupdateByConcurrentAndTransaction() {
+
+        AtomicInteger atomicInteger = new AtomicInteger();
+
+        for (int i = 0; i < 20; i++) {
+            new Thread(() -> {
+                this.forupdateMapper.findByName("testforupdate");
+                System.out.println("========ok:" + atomicInteger.getAndIncrement());
+            }).start();
+            new Thread(() ->
+                    transactionTemplate.execute(transactionStatus -> {
+                        this.forupdateMapper.findByName("testforupdate");
+                        System.out.println("========ok:" + atomicInteger.getAndIncrement());
+                        return null;
+                    })).start();
+        }
+    }
 }
