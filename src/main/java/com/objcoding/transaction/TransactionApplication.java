@@ -32,8 +32,8 @@ public class TransactionApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 //        forupdateByTransaction();
-        forupdateByConcurrent();
-//        forupdateByConcurrentAndTransaction();
+//        forupdateByConcurrent();
+        forupdateByConcurrentAndTransaction();
     }
 
 
@@ -65,7 +65,7 @@ public class TransactionApplication implements CommandLineRunner {
     }
 
     /**
-     * 并发执行for udpate不加Spring事务
+     * 并发执行for udpate不加Spring事务，每条sql的执行只有mybatis的jdbc事务
      *
      * mysql
      * autocommit=true：不会阻塞
