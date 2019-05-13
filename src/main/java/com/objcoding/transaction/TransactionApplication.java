@@ -37,7 +37,12 @@ public class TransactionApplication implements CommandLineRunner {
         forupdateByConcurrentAndTransaction();
     }
 
-    // for update不加事务
+    /**
+     * for update不加事务
+     *
+     * 数据库autocommit=true：不会阻塞
+     * 数据库autocommit=false：很大概率不会阻塞
+     */
     private void forupdate() throws Exception {
 
         new Thread(() -> {
@@ -53,7 +58,12 @@ public class TransactionApplication implements CommandLineRunner {
 
     }
 
-    // for update加事务，并且不提交事务
+    /**
+     * for update加事务，并且不提交事务
+     *
+     * 数据库autocommit=true：阻塞，如果提交事务后，不会阻塞
+     * 数据库autocommit=false：阻塞，如果提交事务后，不会阻塞
+     */
     private void forupdateByTransaction() throws Exception {
 
         // 主线程获取独占锁
@@ -77,7 +87,12 @@ public class TransactionApplication implements CommandLineRunner {
         reentrantLock.unlock();
     }
 
-    // 并发执行for udpate不加事务
+    /**
+     * 并发执行for udpate不加事务
+     *
+     * 数据库autocommit=true：不会阻塞
+     * 数据库autocommit=false：阻塞
+     */
     private void forupdateByConcurrent() {
 
         AtomicInteger atomicInteger = new AtomicInteger();
@@ -90,7 +105,12 @@ public class TransactionApplication implements CommandLineRunner {
         }
     }
 
-    // 并发执行for udpate加事务
+    /**
+     * 并发执行for udpate加事务
+     *
+     * 数据库autocommit=true：不会阻塞
+     * 数据库autocommit=false：不会阻塞
+     */
     private void forupdateByConcurrentAndTransaction() {
 
         AtomicInteger atomicInteger = new AtomicInteger();
