@@ -56,15 +56,14 @@ public class TransactionApplication implements CommandLineRunner {
         // 主线程获取独占锁
         reentrantLock.lock();
 
-        new Thread(() ->
-                transactionTemplate.execute(transactionStatus -> {
-                    this.forupdateMapper.findByName("testforupdate");
-                    System.out.println("==========for update==========");
-                    countDownLatch.countDown();
-                    // 阻塞不让提交事务
-                    reentrantLock.lock();
-                    return null;
-                })).start();
+        new Thread(() -> transactionTemplate.execute(transactionStatus -> {
+            this.forupdateMapper.findByName("testforupdate");
+            System.out.println("==========for update==========");
+            countDownLatch.countDown();
+            // 阻塞不让提交事务
+            reentrantLock.lock();
+            return null;
+        })).start();
 
         countDownLatch.await();
         System.out.println("==========for update has countdown==========");
@@ -88,7 +87,7 @@ public class TransactionApplication implements CommandLineRunner {
 
         AtomicInteger atomicInteger = new AtomicInteger();
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10; i++) {
             new Thread(() -> {
                 this.forupdateMapper.findByName("testforupdate");
                 System.out.println("========ok:" + atomicInteger.getAndIncrement());
@@ -113,12 +112,11 @@ public class TransactionApplication implements CommandLineRunner {
         AtomicInteger atomicInteger = new AtomicInteger();
 
         for (int i = 0; i < 100; i++) {
-            new Thread(() ->
-                    transactionTemplate.execute(transactionStatus -> {
-                        this.forupdateMapper.findByName("testforupdate");
-                        System.out.println("========ok:" + atomicInteger.getAndIncrement());
-                        return null;
-                    })).start();
+            new Thread(() -> transactionTemplate.execute(transactionStatus -> {
+                this.forupdateMapper.findByName("testforupdate");
+                System.out.println("========ok:" + atomicInteger.getAndIncrement());
+                return null;
+            })).start();
         }
     }
 }
