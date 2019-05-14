@@ -1,5 +1,12 @@
 package com.objcoding.transaction;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.mybatis.spring.transaction.SpringManagedTransactionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -7,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.sql.DataSource;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
@@ -24,6 +32,9 @@ public class TransactionApplication implements CommandLineRunner {
     @Autowired
     private TransactionTemplate transactionTemplate;
 
+    @Autowired
+    private SqlSessionFactory sqlSessionFactory;
+
     private static final CountDownLatch countDownLatch = new CountDownLatch(1);
 
     private static final ReentrantLock reentrantLock = new ReentrantLock();
@@ -32,8 +43,8 @@ public class TransactionApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 //        forupdateByTransaction();
-//        forupdateByConcurrent();
-        forupdateByConcurrentAndTransaction();
+        forupdateByConcurrent();
+//        forupdateByConcurrentAndTransaction();
     }
 
     /**
@@ -71,19 +82,21 @@ public class TransactionApplication implements CommandLineRunner {
      * autocommit=false：不会阻塞
      * <p>
      * oracle
-     * autocommit=false：阻塞
+     * autocommit=false：如果有两个以上ID不同的connection对象并发执行for udpate，会发生阻塞
      */
     private void forupdateByConcurrent() {
 
         AtomicInteger atomicInteger = new AtomicInteger();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             new Thread(() -> {
                 this.forupdateMapper.findByName("testforupdate");
                 System.out.println("========ok:" + atomicInteger.getAndIncrement());
             }).start();
         }
+
     }
+
 
     /**
      * 并发执行for udpate加Srping事务
@@ -99,7 +112,7 @@ public class TransactionApplication implements CommandLineRunner {
 
         AtomicInteger atomicInteger = new AtomicInteger();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             new Thread(() ->
                     transactionTemplate.execute(transactionStatus -> {
                         this.forupdateMapper.findByName("testforupdate");
