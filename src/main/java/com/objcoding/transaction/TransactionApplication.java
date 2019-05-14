@@ -82,6 +82,8 @@ public class TransactionApplication implements CommandLineRunner {
      * <p>
      * oracle
      * autocommit=false：如果有两个以上ID不同的connection对象并发执行for udpate，会发生阻塞
+     *
+     * 我疑惑的地方也是在这里，明明mybatis已经帮我们commit了，为什么oracle这货还会阻塞，不符合常理啊！
      */
     private void forupdateByConcurrent() {
 
@@ -106,6 +108,7 @@ public class TransactionApplication implements CommandLineRunner {
      * <p>
      * oracle
      * autocommit=false：不会阻塞
+     * 这里也是我疑惑的地方，为什么加spring事务就不会阻塞？一样是commit，spring事务的commit就比mybatis的事务commit高贵？
      */
     private void forupdateByConcurrentAndTransaction() {
 
